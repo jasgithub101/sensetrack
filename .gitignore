@@ -1,0 +1,14 @@
+.env
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Captured images and the Pi's local outbox are runtime data, not source.
+backend/data/images/
+pi/outbox.db
+pi/.backend_cache
+pi/captures/
+
+# Model binaries are fetched by pi/download_model.py
+*.onnx

@@ -1,0 +1,30 @@
+# Edge device dependencies.
+#
+# PREFER APT. On a Pi 3B, pip will try to compile anything that lacks a wheel
+# for your Python version, which can take hours and trip undervoltage. Debian
+# ships prebuilt binaries for everything here except the TFLite runtime:
+#
+#   sudo apt install -y python3-numpy python3-pil python3-requests python3-yaml \
+#                       python3-opencv python3-rpi.gpio python3-venv
+#
+# Create the venv so it can see them:
+#   python3 -m venv --system-site-packages .venv
+#
+# Then the interpreter, which has no Debian package:
+#   pip install --only-binary=:all: ai-edge-litert
+#
+# TFLite runtime, in order of preference:
+#   ai-edge-litert   — Python 3.9-3.13, aarch64 wheels available
+#   tflite-runtime   — Python <= 3.11 ONLY; unavailable on Debian 13 / Py 3.13
+#
+# The versions below are deliberately unpinned lower bounds. Pinning exact
+# versions here caused pip to source-build numpy on Python 3.13, because
+# numpy 1.26.x publishes no cp313 wheels.
+
+requests>=2.31
+PyYAML>=6.0
+numpy>=1.24
+Pillow>=10.0
+
+# Development fallbacks (not needed on the Pi):
+# opencv-python     # USB webcam on a laptop; on the Pi use apt python3-opencv

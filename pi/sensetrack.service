@@ -1,0 +1,28 @@
+# systemd unit so the capture loop starts with the Pi.
+#
+#   sudo cp pi/sensetrack.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now sensetrack
+#   journalctl -u sensetrack -f        # live logs
+#
+# Adjust User/WorkingDirectory if you cloned somewhere other than /home/pi.
+
+[Unit]
+Description=SenseTrack edge capture loop
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/SenseTrack
+ExecStart=/usr/bin/python3 -m pi.main
+Restart=always
+RestartSec=10
+
+# The outbox means a restart loses nothing, so restarting aggressively is safe.
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SenseTrack</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Fade newly arrived events in rather than having them pop. */
+    @keyframes slide-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+    .slide-in { animation: slide-in .25s ease-out; }
+  </style>
+</head>
+<body class="h-full bg-slate-950 text-slate-100 antialiased">
+
+<div class="mx-auto max-w-6xl px-4 py-6 sm:px-6">
+
+  <header class="mb-6 flex flex-wrap items-center justify-between gap-3">
+    <div>
+      <h1 class="text-2xl font-semibold tracking-tight">SenseTrack</h1>
+      <p class="text-sm text-slate-400">IoT visual monitoring &amp; natural-language retrieval</p>
+    </div>
+    <div class="flex items-center gap-2 rounded-full bg-slate-900 px-3 py-1.5 text-sm ring-1 ring-slate-800">
+      <span id="status-dot" class="h-2 w-2 rounded-full bg-slate-600"></span>
+      <span id="status-text" class="text-slate-400">connecting…</span>
+    </div>
+  </header>
+
+  <!-- Ask -->
+  <section class="mb-6 rounded-xl bg-slate-900 p-4 ring-1 ring-slate-800">
+    <label for="question" class="mb-2 block text-sm font-medium text-slate-300">Ask about the history</label>
+    <div class="flex flex-col gap-2 sm:flex-row">
+      <input id="question" type="text" autocomplete="off"
+             placeholder="When was my laptop last detected?"
+             class="min-w-0 flex-1 rounded-lg bg-slate-950 px-3 py-2 text-sm ring-1 ring-slate-700 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-sky-500">
+      <button id="ask-btn"
+              class="shrink-0 rounded-lg bg-sky-600 px-4 py-2 text-sm font-medium hover:bg-sky-500 disabled:opacity-50">
+        Ask
+      </button>
+    </div>
+    <div class="mt-2 flex flex-wrap gap-1.5" id="suggestions"></div>
+    <div id="answer" class="mt-3 hidden rounded-lg bg-slate-950 p-3 text-sm ring-1 ring-slate-800"></div>
+  </section>
+
+  <!-- Current state -->
+  <section class="mb-6">
+    <h2 class="mb-2 text-sm font-medium text-slate-400">Objects seen (last 24h)</h2>
+    <div id="objects" class="flex flex-wrap gap-2 text-sm text-slate-500">loading…</div>
+  </section>
+
+  <!-- Timeline -->
+  <section>
+    <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
+      <h2 class="text-sm font-medium text-slate-400">Event timeline</h2>
+      <div class="flex items-center gap-3 text-sm">
+        <select id="filter-label"
+                class="rounded-lg bg-slate-900 px-2.5 py-1.5 text-sm ring-1 ring-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500">
+          <option value="">All objects</option>
+        </select>
+        <label class="flex cursor-pointer items-center gap-1.5 text-slate-400">
+          <input id="filter-changed" type="checkbox" class="accent-sky-500">
+          Changes only
+        </label>
+      </div>
+    </div>
+    <div id="timeline" class="space-y-2"></div>
+    <p id="empty" class="hidden py-10 text-center text-sm text-slate-500">
+      No events yet. Start the Pi capture loop, or seed history with
+      <code class="text-slate-400">python -m scripts.seed_fake_events</code>.
+    </p>
+  </section>
+
+</div>
+
+<script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+# SenseTrack edge device configuration.
+
+device_id: pi-desk-01
+
+capture:
+  interval_seconds: 60
+  width: 640
+  height: 480
+  # auto | picamera | webcam
+  #   auto     try the CSI ribbon camera, fall back to USB
+  #   picamera CSI camera only
+  #   webcam   USB webcam only (also the laptop development path)
+  backend: webcam      # USB webcam on /dev/video0; no CSI camera on this build
+  webcam_index: 0      # /dev/video0; try 1, 2… if the wrong device is picked
+  # Save every frame locally as well as sending it. Useful for debugging, off by
+  # default so the SD card doesn't fill during long sessions.
+  save_local_copy: false
+
+detection:
+  # .onnx uses onnxruntime, .tflite uses a TFLite runtime — the extension picks
+  # the backend. ONNX is the working path on a Pi 3B with Python 3.13; see the
+  # note at the top of detector.py.
+  model: models/ssd_mobilenet_v1_10.onnx
+  labels: models/coco_labels.txt
+  confidence_threshold: 0.4
+  # Only these COCO labels are reported. Empty list = report everything.
+  # "headphones" has no COCO class; `book` stands in for a notebook.
+  target_labels:
+    - laptop
+    - cell phone
+    - bottle
+    - book
+    - keyboard
+    - mouse
+    - cup
+
+pir:
+  # Not used in this build — capture is purely periodic, so the PIR only ever
+  # contributed metadata. With it disabled, events report motion_since_last:
+  # false. Set enabled: true and wire OUT to the pin below to re-enable.
+  enabled: false
+  gpio_pin: 4          # BCM numbering
+
+backend:
+  # Leave url empty to auto-discover via mDNS (<hostname>.local) and the cached
+  # last-known-good address. Set it explicitly to skip discovery.
+  url: ""
+  hostname: "jassu"    # -> tries http://jassu.local:8000
+  port: 8000
+  timeout_seconds: 15
